@@ -54,7 +54,6 @@ export default function ProfilePage() {
             "email": "neznayudiyor@gmail.com",
             "lastLoginTime": 1762592986,
             "name": "Diyor Malikov",
-            "projectId": "f3hhpph9m874",
             "uid": "ehir56wozoqo"
         }
     }

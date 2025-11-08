@@ -3,7 +3,6 @@ import react from "@vitejs/plugin-react"
 import { defineConfig } from "vite"
 import { componentTagger } from "@devvai/devv-tagger-plugin"
 
-// https://vite.dev/config/
 export default defineConfig({
   plugins: [componentTagger(), react()],
   resolve: {

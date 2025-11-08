@@ -22,8 +22,6 @@ export function useIsMobile() {
 
   return !!isMobile
 }
-// Inspired by react-hot-toast library
-import * as React from "react"
 
 import type {
   ToastActionElement,
