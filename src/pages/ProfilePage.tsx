@@ -123,10 +123,11 @@ export default function ProfilePage() {
 
                 {/* Profile Tabs */}
                 <Tabs defaultValue="overview" className="space-y-6">
-                    <TabsList className="grid w-full grid-cols-4">
+                    <TabsList className="grid w-full grid-cols-5">
                         <TabsTrigger value="overview">Overview</TabsTrigger>
                         <TabsTrigger value="learning">Learning</TabsTrigger>
                         <TabsTrigger value="applications">Applications</TabsTrigger>
+                        <TabsTrigger value="startups">Startups</TabsTrigger>
                         <TabsTrigger value="settings">Settings</TabsTrigger>
                     </TabsList>
 
@@ -230,6 +231,23 @@ export default function ProfilePage() {
                                         Explore internship opportunities and apply to positions
                                     </p>
                                     <Button onClick={() => navigate('/internships')}>View Internships</Button>
+                                </div>
+                            </CardContent>
+                        </Card>
+                    </TabsContent>
+
+                    {/* Startups Tab */}
+                    <TabsContent value="startups">
+                        <Card>
+                            <CardHeader>
+                                <CardTitle>Startups</CardTitle>
+                                <CardDescription>Track your Startups</CardDescription>
+                            </CardHeader>
+                            <CardContent>
+                                <div className="text-center py-12">
+                                    <BookOpen className="w-16 h-16 text-gray-300 mx-auto mb-4" />
+                                    <h3 className="text-lg font-semibold text-gray-900 mb-2">No Startups yet</h3>
+                                    <Button onClick={() => navigate('/startups/create')}>Create Startup</Button>
                                 </div>
                             </CardContent>
                         </Card>

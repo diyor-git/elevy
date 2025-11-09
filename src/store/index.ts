@@ -3,6 +3,7 @@ import { TypedUseSelectorHook, useDispatch, useSelector } from 'react-redux';
 import authReducer from './authSlice';
 import forumReducer from './forumSlice';
 import adminReducer from './adminSlice';
+import startupSlice from "@/store/startupSlice.ts";
 
 // Load persisted state from localStorage
 const loadState = (): { auth?: Partial<ReturnType<typeof authReducer>>; admin?: Partial<ReturnType<typeof adminReducer>> } | undefined => {
@@ -23,6 +24,7 @@ export const store = configureStore({
     auth: authReducer,
     forum: forumReducer,
     admin: adminReducer,
+    startup: startupSlice
   },
   preloadedState: loadState(),
 });
