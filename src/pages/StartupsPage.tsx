@@ -5,7 +5,8 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Building2, Search, SlidersHorizontal, X } from 'lucide-react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import {StartupCard} from '@/components/StartupCard.tsx'; // You’ll need a card similar to CourseCard
+import {StartupCard} from '@/components/StartupCard.tsx';
+import {NDAModal} from "@/components/NDAModal.tsx"; // You’ll need a card similar to CourseCard
 
 export default function StartupsPage() {
     const [searchQuery, setSearchQuery] = useState('');
@@ -71,6 +72,7 @@ export default function StartupsPage() {
 
     return (
         <div className="min-h-screen pt-24 pb-20 bg-gradient-to-b from-background to-muted/20">
+            <NDAModal open={false} onOpenChange={() => {}} onSign={() => {}} startupName={"startup"}/>
             <div className="container-custom">
                 {/* Header */}
                 <div className="mb-12 text-center">
