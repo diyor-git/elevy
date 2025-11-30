@@ -7,15 +7,12 @@ import {Toaster} from '@/components/ui/toaster';
 import {NotFound} from "@/components";
 import {useAppDispatch} from "@/redux/hooks.ts";
 import {setTokenFromCookie} from '@/redux/slices/auth-slice';
-import {useEffect} from "react";
+import Dashboard from "@/pages/platform";
 
 function App() {
     const token = Cookies.get('token')
     const dispatch = useAppDispatch()
 
-    // useEffect(() = {
-    //
-    // }, [])
     if (token) dispatch(setTokenFromCookie(token));
     return (
         <TooltipProvider>
@@ -26,6 +23,7 @@ function App() {
                     <Route path="/signup" element={<SignupPage/>}/>
                     <Route path="/verify-email" element={<VerifyEmailPage/>}/>
 
+                    <Route path="/dashboard/*" element={<Dashboard/>}/>
 
 
                     <Route index path="/*" element={<Navigate to="/404"/>}/>

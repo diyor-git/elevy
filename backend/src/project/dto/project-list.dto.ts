@@ -11,4 +11,5 @@ export class ProjectListDto {
   @ApiProperty() createdAt: Date;
   @ApiProperty({ required: false }) jobsCount?: number;
   @ApiProperty({ required: false }) teamCount?: number;
+
 }

@@ -8,6 +8,15 @@ import { UpdateJobDto } from './dto/update-job.dto';
 import { CreateMessageDto } from './dto/create-message.dto';
 import { CreateJobDto } from './dto/create-job.dto';
 
+
+interface FindAllParams {
+  search?: string;
+  category?: string;
+  stage?: string;
+  page?: number;
+  limit?: number;
+}
+
 @Injectable()
 export class ProjectsService {
   constructor(private prisma: PrismaService) {}
@@ -17,16 +26,40 @@ export class ProjectsService {
     return this.prisma.project.create({ data: { ...dto, creatorId } });
   }
 
-  async findAll() {
-    return this.prisma.project.findMany({
-      select: { id: true, name: true, image: true, category: true, stage: true, teamSize: true, createdAt: true }
-    });
-  }
+async findAll(params: { page?: number; limit?: number; category?: string; stage?: string; search?: string }) {
+  const { page = 1, limit = 6, category, stage, search } = params;
+
+  const where: any = {};
+  if (category && category !== 'all') where.category = category;
+  if (stage && stage !== 'all') where.stage = stage;
+  if (search) where.name = { contains: search, mode: 'insensitive' };
+
+  const total = await this.prisma.project.count({ where });
+
+  const currentPage = Math.max(page, 1);
+  const projects = await this.prisma.project.findMany({
+    where,
+    skip: (currentPage - 1) * limit,
+    take: limit,
+    select: {
+      id: true,
+      name: true,
+      image: true,
+      category: true,
+      stage: true,
+      teamSize: true,
+      createdAt: true,
+      description: true,
+    },
+  });
+
+  return { projects, total, page: currentPage, totalPages: Math.ceil(total / limit) };
+}
 
   async findOne(id: string) {
     return this.prisma.project.findUnique({
       where: { id },
-      include: { tasks: true, jobs: true, teamMembers: true, messages: true },
+      include: { tasks: false, jobs: true, teamMembers: true, messages: false },
     });
   }
 

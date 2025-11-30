@@ -8,5 +8,10 @@ export const startupsAPI = {
             return response
         })
     },
+    getStartupById(id: string): Promise<AxiosResponse<any>> {
+        return $instance.get<any>(`startups/${id}`).then((response) => {
+            return response
+        })
+    },
 }
 

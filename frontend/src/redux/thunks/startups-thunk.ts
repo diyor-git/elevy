@@ -19,3 +19,14 @@ export const getAllStartups = createAsyncThunk(
         }
     }
 )
+export const getStartupById = createAsyncThunk(
+    'startups/getStartupById',
+    async (id: string, thunkAPI) => {
+        try {
+            const response = await startupsAPI.getStartupById(id)
+            return response.data
+        } catch (e: any) {
+            return thunkAPI.rejectWithValue(e.response.data.message)
+        }
+    }
+)
