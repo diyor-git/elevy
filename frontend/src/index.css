@@ -1,0 +1,240 @@
+/**
+ * =====================================
+ *         ELEVY DESIGN SYSTEM
+ * =====================================
+ * 
+ * Project: Elevy - Education, Career & Startup Platform
+ * Type: EdTech Platform
+ * 
+ * DESIGN PHILOSOPHY
+ * -----------------
+ * Core Principle: Clean, breathing interfaces that empower learning
+ * Design Style: Modern Minimal × Notion × Linear hybrid
+ * Emotion Goal: Professional, inspiring, trustworthy, innovative
+ * 
+ * COLOR SYSTEM (HSL FORMAT)
+ * -------------
+ * Background: 210 20% 98% - Soft blue-tinted white
+ * Primary: 210 100% 50% - Vibrant blue (main CTA, links)
+ * Secondary: 195 85% 50% - Turquoise accent (highlights)
+ * Neutral: 220 15% 25% - Deep slate (text)
+ * Muted: 220 10% 96% - Light gray (backgrounds)
+ * Success: 160 84% 39% - Green (achievements)
+ * 
+ * TYPOGRAPHY
+ * ----------
+ * Display: 'Inter', system-ui (headings, hero)
+ * Body: 'Inter', sans-serif (content)
+ * Weight: 400 (normal), 500 (medium), 600 (semibold), 700 (bold)
+ * 
+ * SPACING & LAYOUT
+ * ----------------
+ * Container max: 1280px
+ * Sections: py-16 to py-24
+ * Cards: p-6 to p-8
+ * Generous whitespace for breathing room
+ * 
+ * INTERACTIONS
+ * ------------
+ * Transitions: 200-300ms ease-out
+ * Hover: subtle lift + shadow
+ * States: Complete coverage (hover, active, focus, disabled)
+ * Animations: Fade-in, slide-up on scroll
+ * ====================================
+ */
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* Elevy Light Theme Colors */
+    --background: 210 20% 98%;
+    --foreground: 220 15% 25%;
+    --card: 0 0% 100%;
+    --card-foreground: 220 15% 25%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 220 15% 25%;
+    --primary: 210 100% 50%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 195 85% 50%;
+    --secondary-foreground: 0 0% 100%;
+    --muted: 220 10% 96%;
+    --muted-foreground: 220 10% 50%;
+    --accent: 195 85% 50%;
+    --accent-foreground: 0 0% 100%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 220 13% 91%;
+    --input: 220 13% 91%;
+    --ring: 210 100% 50%;
+    --success: 160 84% 39%;
+    --radius: 0.75rem;
+    
+    /* Sidebar */
+    --sidebar-background: 0 0% 100%;
+    --sidebar-foreground: 220 15% 25%;
+    --sidebar-primary: 210 100% 50%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 220 10% 96%;
+    --sidebar-accent-foreground: 220 15% 25%;
+    --sidebar-border: 220 13% 91%;
+    --sidebar-ring: 210 100% 50%;
+  }
+  
+  .dark {
+    /* Elevy Dark Theme Colors */
+    --background: 220 20% 10%;
+    --foreground: 210 20% 98%;
+    --card: 220 15% 15%;
+    --card-foreground: 210 20% 98%;
+    --popover: 220 15% 15%;
+    --popover-foreground: 210 20% 98%;
+    --primary: 210 100% 55%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 195 85% 55%;
+    --secondary-foreground: 0 0% 100%;
+    --muted: 220 15% 20%;
+    --muted-foreground: 220 10% 60%;
+    --accent: 195 85% 55%;
+    --accent-foreground: 0 0% 100%;
+    --destructive: 0 62.8% 50%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 220 15% 25%;
+    --input: 220 15% 25%;
+    --ring: 210 100% 55%;
+    --success: 160 84% 45%;
+    
+    /* Sidebar Dark */
+    --sidebar-background: 220 15% 15%;
+    --sidebar-foreground: 210 20% 98%;
+    --sidebar-primary: 210 100% 55%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 220 15% 20%;
+    --sidebar-accent-foreground: 210 20% 98%;
+    --sidebar-border: 220 15% 25%;
+    --sidebar-ring: 210 100% 55%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  
+  body {
+    @apply bg-background text-foreground;
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    font-feature-settings: 'cv11', 'ss01';
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+  
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-semibold tracking-tight;
+  }
+}
+
+@layer utilities {
+  /* Animations */
+  @keyframes fade-in-up {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  @keyframes fade-in {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+  
+  @keyframes slide-in-right {
+    from {
+      opacity: 0;
+      transform: translateX(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+  
+  .animate-fade-in-up {
+    animation: fade-in-up 0.6s ease-out;
+  }
+  
+  .animate-fade-in {
+    animation: fade-in 0.6s ease-out;
+  }
+  
+  .animate-slide-in-right {
+    animation: slide-in-right 0.6s ease-out;
+  }
+  
+  /* Hover lift effect */
+  .hover-lift {
+    transition: transform 200ms ease-out, box-shadow 200ms ease-out;
+  }
+  
+  .hover-lift:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 24px -4px rgba(0, 0, 0, 0.08);
+  }
+  
+  /* Gradient text */
+  .gradient-text {
+    background: linear-gradient(135deg, hsl(210 100% 50%) 0%, hsl(195 85% 50%) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  
+  /* Glass morphism */
+  .glass {
+    background: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+  }
+  
+  .glass-dark {
+    background: rgba(0, 0, 0, 0.4);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+  }
+  
+  /* Container */
+  .container-custom {
+    width: 100%;
+    max-width: 1280px;
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+  
+  @media (min-width: 640px) {
+    .container-custom {
+      padding-left: 1.5rem;
+      padding-right: 1.5rem;
+    }
+  }
+  
+  @media (min-width: 1024px) {
+    .container-custom {
+      padding-left: 2rem;
+      padding-right: 2rem;
+    }
+  }
+}

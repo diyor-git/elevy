@@ -1,0 +1,187 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id          String     @id @default(uuid())
+  email       String     @unique
+  password    String
+  firstName   String?
+  lastName    String?
+  middleName  String?
+  birthDate   DateTime?
+  gender      String?
+  role        String
+  createdAt   DateTime   @default(now())
+
+  createdProjects Project[] @relation("CreatorProjects")
+  memberProjects  Project[] @relation("MemberProjects")
+  tasks           Task[]    @relation("AssigneeTasks")
+  jobApplications JobApplicant[]
+  messages        Message[]
+
+  comments        Comment[] @relation("UserComments") // ← добавляем
+}
+
+enum StartupStage {
+  mvp
+  idea
+  growth
+  early_stage
+}
+
+model Project {
+  id             String         @id @default(uuid())
+  name           String
+  description    String
+  description_long String?
+  image          String?
+  category       String
+  stage          StartupStage
+  teamSize       Int
+  website        String?
+  email          String?
+  founded        DateTime
+  techStack      String[]       @default([])
+  seekingInvestors Boolean      @default(false)
+  productLink    String?
+  createdAt      DateTime       @default(now())
+
+
+  // Creator relation
+  creatorId      String
+  creator        User           @relation("CreatorProjects", fields: [creatorId], references: [id])
+
+  // Team members
+  teamMembers    User[]         @relation("MemberProjects")
+
+  // Jobs / Vacancies
+  jobs           JobPosting[]
+
+  // Tasks / Kanban
+  tasks          Task[]
+
+  // Metrics
+  metrics        ProjectMetrics?
+
+  // Investors
+  investors      Investor[]
+
+  // Funding rounds
+  fundingRounds  FundingRound[]
+
+  // Recent updates
+  recentUpdates  ProjectUpdate[]
+
+  // Chat
+  messages       Message[]
+}
+
+model JobPosting {
+  id          String     @id @default(uuid())
+  projectId   String
+  title       String
+  role        String
+  description String
+  location    String
+  salaryMin   Float?
+  salaryMax   Float?
+  type        String     // Full-time / Part-time / Contract
+  posted      DateTime   @default(now())
+  status      String     // open / closed / filled
+  applicants  JobApplicant[]
+  project     Project    @relation(fields: [projectId], references: [id])
+}
+
+model JobApplicant {
+  id        String   @id @default(uuid())
+  jobId     String
+  userId    String
+  appliedAt DateTime @default(now())
+  status    String   // pending / accepted / rejected
+
+  job       JobPosting @relation(fields: [jobId], references: [id])
+  user      User       @relation(fields: [userId], references: [id])
+}
+
+model Task {
+  id          String    @id @default(uuid())
+  projectId   String
+  title       String
+  status      String    // todo / in_progress / done
+  assigneeId  String?
+  priority    String?   // low / medium / high
+  description String?
+  deadline    DateTime?
+  comments    Comment[]
+  activities  Activity[]
+  project     Project   @relation(fields: [projectId], references: [id])
+  assignee    User?     @relation("AssigneeTasks", fields: [assigneeId], references: [id])
+}
+
+model Comment {
+  id        String   @id @default(uuid())
+  taskId    String
+  userId    String
+  content   String
+  createdAt DateTime @default(now())
+  task      Task     @relation(fields: [taskId], references: [id])
+  user      User     @relation("UserComments", fields: [userId], references: [id])
+}
+
+model Activity {
+  id        String   @id @default(uuid())
+  taskId    String
+  content   String
+  createdAt DateTime @default(now())
+  task      Task     @relation(fields: [taskId], references: [id])
+}
+
+model Message {
+  id        String   @id @default(uuid())
+  projectId String
+  userId    String
+  content   String
+  createdAt DateTime @default(now())
+  project   Project  @relation(fields: [projectId], references: [id])
+  user      User     @relation(fields: [userId], references: [id])
+}
+
+model ProjectMetrics {
+  id         String   @id @default(uuid())
+  projectId  String   @unique
+  users      Int?
+  arr        Float?
+  monthlyGrowth Float?
+  project    Project  @relation(fields: [projectId], references: [id])
+}
+
+model Investor {
+  id          String   @id @default(uuid())
+  name        String
+  website     String?
+  email       String?
+  investedIn  Project[]
+}
+
+model FundingRound {
+  id          String   @id @default(uuid())
+  projectId   String
+  amount      Float
+  date        DateTime
+  project     Project  @relation(fields: [projectId], references: [id])
+}
+
+model ProjectUpdate {
+  id        String   @id @default(uuid())
+  projectId String
+  title     String
+  date      DateTime
+  content   String
+  project   Project  @relation(fields: [projectId], references: [id])
+}
