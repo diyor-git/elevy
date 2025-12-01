@@ -107,7 +107,7 @@ export interface FundingRound {
 }
 
 export interface Startup {
-    id: string;
+    id: string
     name: string;
     description: string;
     description_long: string;

@@ -1,32 +1,25 @@
 import {Link, useParams} from "react-router-dom";
 import {Button} from "@/components/ui/button";
 import {ArrowLeft} from "lucide-react";
-
-import {useAppDispatch, useAppSelector} from "@/redux/hooks.ts";
-import {useEffect, useState} from "react";
-import {getStartup} from "@/redux/selectors/startupsSelector.ts";
-import {getStartupById} from "@/redux/thunks/startups-thunk.ts";
 import {
-    FundingTimeline, Hero,
+    About,
+    FundingTimeline,
+    Hero,
     JobsList,
+    Sidebar,
     StartupSkeleton,
     Team,
     TechStack,
     UpdatesList
 } from "@/pages/platform/pages/Startups/components";
+import {useGetStartupByIdQuery} from "@/api/startups-api.ts";
 
 function StartupDetailsPage() {
     const {id} = useParams();
-    const dispatch = useAppDispatch();
-    const startup = useAppSelector(getStartup);
 
-    const [loading, setLoading] = useState(true);
+    const {data: startup, isLoading, isError} = useGetStartupByIdQuery(id!)
 
-    useEffect(() => {
-        if (id) dispatch(getStartupById(id)).then()
-            .finally(() => setLoading(false));
-    }, [id]);
-    if (loading) return <StartupSkeleton/>;
+    if (isLoading) return <StartupSkeleton/>;
 
     if (!startup)
         return (
@@ -49,15 +42,16 @@ function StartupDetailsPage() {
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
                     {/* MAIN COLUMN */}
                     <div className="lg:col-span-2 space-y-8">
+                        <About description_long={startup.description_long}/>
                         <TechStack stack={startup.techStack}/>
-                        <FundingTimeline rounds={startup.fundingRounds}/>
+                        <FundingTimeline rounds={[]}/>
                         <JobsList jobs={startup.jobs}/>
-                        <UpdatesList updates={startup.recentUpdates}/>
-                        <Team members={startup.teamMembers} teamSize={startup.teamSize} onClick={() => {}}/>
+                        <UpdatesList updates={[]}/>
+                        <Team members={startup.teamMembers} teamSize={startup.teamSize} onClick={() => {
+                        }}/>
                     </div>
 
-                    {/* SIDEBAR */}
-                    <Sidebar startup={startup}/>
+                    <Sidebar teamSize={startup.teamSize} metrics={[]}/>
                 </div>
             </main>
         </div>

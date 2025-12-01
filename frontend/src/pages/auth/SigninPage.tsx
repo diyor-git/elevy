@@ -2,35 +2,46 @@ import {Link, useNavigate} from "react-router-dom";
 import {Controller, useForm} from "react-hook-form";
 import {zodResolver} from "@hookform/resolvers/zod";
 import {loginSchema, LoginSchema} from "@/pages/auth/schema/login-schema";
-import {useAppDispatch, useAppSelector} from "@/redux/hooks";
-import {getAuthError, getAuthLoading} from "@/redux/selectors/authSelector";
-
 import {Input} from "@/components/ui/input";
 import {Button} from "@/components/ui/button";
 import {Label} from "@/components/ui/label";
 import {GraduationCap, Mail} from "lucide-react";
 import {PasswordField} from "@/pages/auth/components";
-import {signIn} from "@/redux/thunks/auth-thunk.ts";
+import {useGetProfileQuery, useSignInMutation} from "@/api/auth-api.ts";
 import {SignInDataTypes} from "@/types/auth-types.ts";
+import {useToast} from "@/hooks/use-toast.ts";
+import {useEffect} from "react";
 
 function SigninPage() {
-    const dispatch = useAppDispatch();
-    const loading = useAppSelector(getAuthLoading);
-    const serverError = useAppSelector(getAuthError);
     const navigate = useNavigate();
+    const [signIn, {isLoading, error}] = useSignInMutation();
+    const {toast} = useToast()
+
+    const {data: user, isLoading: userLoading, isError} = useGetProfileQuery();
 
     const {control, handleSubmit, formState: {errors}} = useForm<LoginSchema>({
         resolver: zodResolver(loginSchema),
         defaultValues: {email: "", password: ""}
     });
 
-    const onSubmit = (data: LoginSchema) => {
-        dispatch(signIn(data as SignInDataTypes))
-            .unwrap()
-            .then(() => {
-                navigate("/startups");
-            });
+    const onSubmit = async (data: LoginSchema) => {
+        try {
+            await signIn(data as SignInDataTypes).unwrap();
+            navigate("/dashboard/startups");
+        } catch (err: any) {
+            toast({
+                title: "Ошибка",
+                description: err?.data?.message || "Sign in failed",
+                variant: "destructive"
+            })
+        }
     };
+
+    useEffect(() => {
+        if (user) {
+            navigate("/dashboard/startups")
+        }
+    }, [])
 
     return (
         <div
@@ -69,21 +80,17 @@ function SigninPage() {
                         <Controller
                             name="password"
                             control={control}
-                            render={({field}) => (
-                                <PasswordField {...field} error={errors.password} label="Password"/>
-                            )}
+                            render={({field}) => <PasswordField {...field} error={errors.password} label="Password"/>}
                         />
 
-                        {serverError && <p className="text-xs text-destructive text-center">{serverError}</p>}
-
-                        <Button type="submit" disabled={loading} className="w-full h-11 font-semibold">
-                            {loading ? "Signing in..." : "Sign In"}
+                        <Button type="submit" disabled={isLoading} className="w-full h-11 font-semibold">
+                            {isLoading ? "Signing in..." : "Sign In"}
                         </Button>
                     </form>
 
                     <p className="text-center text-sm text-muted-foreground mt-6">
                         Don't have an account?{" "}
-                        <Link to="/auth/signup" className="text-primary font-semibold hover:underline">
+                        <Link to="/signup" className="text-primary font-semibold hover:underline">
                             Sign up
                         </Link>
                     </p>

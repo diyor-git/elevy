@@ -1,16 +1,17 @@
-import {configureStore} from '@reduxjs/toolkit';
-import startupsReducer from '@/redux/slices/startups-slice';
-import authReducer from '@/redux/slices/auth-slice';
+import { configureStore } from "@reduxjs/toolkit";
+import {authApi} from "@/api/auth-api.ts";
+import {startupsApi} from "@/api/startups-api.ts";
+
 
 export const store = configureStore({
-    middleware: (getDefaultMiddleware) =>
-        getDefaultMiddleware({
-            serializableCheck: false,
-        }),
     reducer: {
-        startups: startupsReducer,
-        auth: authReducer,
+        [authApi.reducerPath]: authApi.reducer,
+        [startupsApi.reducerPath]: startupsApi.reducer,
     },
+    middleware: (getDefaultMiddleware) =>
+        getDefaultMiddleware()
+            .concat(authApi.middleware)
+            .concat(startupsApi.middleware),
 });
 
 export type RootState = ReturnType<typeof store.getState>;

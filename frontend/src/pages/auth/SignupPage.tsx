@@ -1,9 +1,6 @@
 import {Controller, useForm} from "react-hook-form";
 import {zodResolver} from "@hookform/resolvers/zod";
-import {signupSchema, SignupSchema} from "@/pages/auth/schema/signup-schema";
-import {useAppDispatch, useAppSelector} from "@/redux/hooks";
-import {signUp} from "@/redux/thunks/auth-thunk";
-import {getAuthError, getAuthLoading} from "@/redux/selectors/authSelector";
+import {signupSchema, SignupSchema} from "@/pages/auth/schema/signup-schema.ts";
 
 import {Input} from "@/components/ui/input";
 import {Button} from "@/components/ui/button";
@@ -11,13 +8,17 @@ import {Label} from "@/components/ui/label";
 import {GraduationCap, Mail, User} from "lucide-react";
 import {Link, useNavigate} from "react-router-dom";
 import {PasswordField} from "@/pages/auth/components";
-import {UserData} from "@/types/auth-types.ts";
+import {useGetProfileQuery, useSignUpMutation} from "@/api/auth-api.ts";
+import {SignUpDataTypes} from "@/types/auth-types.ts";
+import {useToast} from "@/hooks/use-toast.ts";
+import {useEffect} from "react";
 
 export default function SignupPage() {
-    const dispatch = useAppDispatch();
-    const loading = useAppSelector(getAuthLoading);
-    const serverError = useAppSelector(getAuthError);
     const navigate = useNavigate();
+    const [signUp, {isLoading, error: serverError}] = useSignUpMutation();
+    const {toast} = useToast()
+
+    const {data: user, isLoading: userLoading, isError} = useGetProfileQuery();
 
     const {control, handleSubmit, formState: {errors}} = useForm<SignupSchema>({
         resolver: zodResolver(signupSchema),
@@ -31,13 +32,26 @@ export default function SignupPage() {
         }
     });
 
-    const onSubmit = (data: SignupSchema) => {
-        dispatch(signUp(data as UserData))
-            .unwrap()
-            .then(() => {
-                navigate("/dashboard");
-            });
+    const onSubmit = async (data: SignupSchema) => {
+        try {
+            await signUp(data as SignUpDataTypes).unwrap();
+            navigate("/dashboard/startups")
+        } catch (err: any) {
+            toast({
+                title: "Ошибка",
+                description: err?.data?.message || "Sign in failed",
+                variant: "destructive"
+            })
+        }
     };
+
+
+    useEffect(() => {
+        if (user) {
+            navigate("/dashboard/startups")
+        }
+    }, [])
+
 
     return (
         <div
@@ -157,12 +171,18 @@ export default function SignupPage() {
                             )}
                         />
 
-                        {serverError && <p className="text-xs text-destructive text-center">{serverError}</p>}
+                        {serverError && <p className="text-xs text-destructive text-center">{"serverError"}</p>}
 
-                        <Button disabled={loading} type="submit" className="w-full h-11 mt-4 font-semibold">
-                            {loading ? "Creating account..." : "Create Account"}
+                        <Button disabled={isLoading} type="submit" className="w-full h-11 mt-4 font-semibold">
+                            {isLoading ? "Creating account..." : "Create Account"}
                         </Button>
                     </form>
+                    <p className="text-center text-sm text-muted-foreground mt-6">
+                        Have an account?{" "}
+                        <Link to="/signin" className="text-primary font-semibold hover:underline">
+                            Sign in
+                        </Link>
+                    </p>
                 </div>
             </div>
         </div>

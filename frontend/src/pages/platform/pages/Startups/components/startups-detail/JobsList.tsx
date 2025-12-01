@@ -1,6 +1,7 @@
 import {Card} from "@/components/ui/card.tsx";
 import {Briefcase} from "lucide-react";
 import {Badge} from "@/components/ui/badge.tsx";
+import {Button} from "@/components/ui/button.tsx";
 
 function JobsList({jobs = []}) {
     if (!jobs.length) return null;
@@ -35,7 +36,7 @@ function JobsList({jobs = []}) {
                             </p>
                         )}
 
-                        <button className="mt-2 text-sm text-primary hover:underline">Apply Now</button>
+                        <Button className="mt-2 text-sm">Apply Now</Button>
                     </div>
                 ))}
             </div>

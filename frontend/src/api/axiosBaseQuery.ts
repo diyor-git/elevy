@@ -1,6 +1,6 @@
-import axios, { AxiosRequestConfig, Method } from "axios";
+import axios, {AxiosRequestConfig, Method} from "axios";
 import Cookies from "js-cookie";
-import { BaseQueryFn } from "@reduxjs/toolkit/query";
+import {BaseQueryFn} from "@reduxjs/toolkit/query";
 
 interface AxiosBaseQueryArgs {
     baseUrl?: string;
@@ -15,12 +15,12 @@ interface AxiosQueryArgs {
 }
 
 export const axiosBaseQuery =
-    ({ baseUrl = "" }: AxiosBaseQueryArgs = {}): BaseQueryFn<
+    ({baseUrl = "http://localhost:3000/"}: AxiosBaseQueryArgs = {}): BaseQueryFn<
         AxiosQueryArgs,
         unknown,
         unknown
     > =>
-        async ({ url, method, data, params, headers }) => {
+        async ({url, method, data, params, headers}) => {
             const token = Cookies.get("token");
 
             const axiosConfig: AxiosRequestConfig = {
@@ -38,7 +38,7 @@ export const axiosBaseQuery =
 
             try {
                 const result = await axios(axiosConfig);
-                return { data: result.data };
+                return {data: result.data};
             } catch (error: any) {
                 return {
                     error: {

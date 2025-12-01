@@ -1,5 +1,6 @@
-import {Users} from "lucide-react";
+import {User, Users} from "lucide-react";
 import {Card} from "@/components/ui/card";
+import {Avatar} from "@/components/ui/avatar.tsx";
 
 function Team({members = [], teamSize = 0, onClick}) {
     return (
@@ -20,8 +21,13 @@ function Team({members = [], teamSize = 0, onClick}) {
                         onClick={() => onClick?.(member)}
                         className="p-4 rounded-lg border hover:shadow-lg hover:border-primary transition-all text-left"
                     >
-                        <div className="text-3xl mb-2">{member.avatar}</div>
-                        <p className="font-semibold text-sm line-clamp-1">{member.name}</p>
+                        <Avatar className="mb-2">
+                            {!member.avatar ?
+                                <img
+                                    src={"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSXoB8ADAnEngygXTJj6VHp2Y7wljbliJxgUw&s"}/> :
+                                <User/>}
+                        </Avatar>
+                        <p className="font-semibold text-sm line-clamp-1">{member.firstName}DSA</p>
                         <p className="text-xs text-muted-foreground">{member.role}</p>
                     </button>
                 ))}

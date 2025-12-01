@@ -1,11 +1,11 @@
 import {useCallback, useMemo, useState} from "react";
 import {Link, useLocation} from "react-router-dom";
 import {
+    Bell,
     Briefcase,
     ChartNoAxesGantt,
     FolderDot,
     Menu,
-    MessageSquare,
     Plus,
     Rocket,
     Send,
@@ -25,7 +25,7 @@ import {DashboardLayoutProps, NavItem} from "@/types/layout";
 const navItems: NavItem[] = [
     {
         title: "Internships",
-        href: "/dashboard//internships",
+        href: "/dashboard/internships",
         icon: Briefcase,
         children: [
             {title: "Internships", href: "/internships", icon: ChartNoAxesGantt},
@@ -39,11 +39,11 @@ const navItems: NavItem[] = [
     },
     {
         title: "My Startups",
-        href: "/dashboard//my-startups",
+        href: "/dashboard/my-startups",
         icon: Rocket,
         children: [
-            {title: "Create Startup", href: "/my-startups/create", icon: Plus},
-            {title: "Projects", href: "/my-startups", icon: Target},
+            {title: "Create Startup", href: "/dashboard/my-startups/create", icon: Plus},
+            {title: "Projects", href: "/dashboard/my-startups", icon: Target},
         ],
     },
     {title: "AI Zone", href: "/dashboard/ai-zone", icon: Sparkles},
@@ -74,7 +74,7 @@ export default function DashboardLayout({children}: DashboardLayoutProps) {
 
     const SidebarContent = useMemo(
         () => (
-            <div className="flex flex-col h-full bg-white">
+            <div className="flex flex-col h-full bg-white z-40">
                 {/* Logo */}
                 <div className="h-16 flex items-center px-6 border-b">
                     <Link to="/" className="flex items-center gap-2 group">
@@ -107,18 +107,22 @@ export default function DashboardLayout({children}: DashboardLayoutProps) {
 
                 {/* User */}
                 <div className="border-t p-4">
-                    <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 rounded-full bg-primary text-white flex items-center justify-center">
-                            JD
-                        </div>
-                        {isSidebarOpen && (
-                            <div>
-                                <p className="text-sm font-medium">John Doe</p>
-                                <p className="text-xs text-muted-foreground">john@elevy.com</p>
+                    <Link to="/dashboard/profile">
+                        <div className="flex items-center gap-3">
+                            <div
+                                className="w-10 h-10 rounded-full bg-primary text-white flex items-center justify-center">
+                                JD
                             </div>
-                        )}
-                    </div>
+                            {isSidebarOpen && (
+                                <div>
+                                    <p className="text-sm font-medium">John Doe</p>
+                                    <p className="text-xs text-muted-foreground">john@elevy.com</p>
+                                </div>
+                            )}
+                        </div>
+                    </Link>
                 </div>
+
             </div>
         ),
         [expanded, activePath, isSidebarOpen]
@@ -176,7 +180,7 @@ export default function DashboardLayout({children}: DashboardLayoutProps) {
                     </div>
 
                     <Button variant="ghost" size="icon" className="relative">
-                        <MessageSquare className="h-5 w-5"/>
+                        <Bell className="h-5 w-5"/>
                         <span className="absolute top-1 right-1 w-2 h-2 bg-primary rounded-full"/>
                     </Button>
                 </header>

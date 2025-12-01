@@ -1,60 +1,64 @@
-import {useDispatch} from 'react-redux';
-import {AppDispatch} from '@/redux/store';
-import {useEffect, useMemo} from "react";
-import {getAllStartups} from "@/redux/thunks/startups-thunk.ts";
-import {useAppSelector} from "@/redux/hooks.ts";
-import {
-    getStartups,
-    getStartupsCurrentPage,
-    getStartupsLoading,
-    getStartupsQuery,
-    getStartupsSelectedCategory,
-    getStartupsSelectedStage
-} from "@/redux/selectors/startupsSelector";
+import {useMemo, useState} from "react";
 import {Briefcase, Users} from "lucide-react";
-import {
-    resetFilters,
-    setCurrentPage,
-    setSearchQuery,
-    setSelectedCategory,
-    setSelectedStage
-} from "@/redux/slices/startups-slice.ts";
+import {useGetStartupsListQuery} from "@/api/startups-api.ts";
 
-export const useStartups = () => {
+interface UseStartupsOptions {
+    initialCategory?: string;
+    initialStage?: string;
+    initialSearch?: string;
+    initialPage?: number;
+}
 
-    const dispatch = useDispatch<AppDispatch>();
+export const useStartups = ({
+                                initialCategory = "all",
+                                initialStage = "all",
+                                initialSearch = "",
+                                initialPage = 1,
+                            }: UseStartupsOptions = {}) => {
+    const [selectedCategory, setSelectedCategory] = useState(initialCategory);
+    const [selectedStage, setSelectedStage] = useState(initialStage);
+    const [searchQuery, setSearchQuery] = useState(initialSearch);
+    const [currentPage, setCurrentPage] = useState(initialPage);
 
-    const startups = useAppSelector(getStartups)
-    const loading = useAppSelector(getStartupsLoading);
-    const selectedCategory = useAppSelector(getStartupsSelectedCategory);
-    const selectedStage = useAppSelector(getStartupsSelectedStage);
-    const searchQuery = useAppSelector(getStartupsQuery);
-    const currentPage = useAppSelector(getStartupsCurrentPage);
-
-    useEffect(() => {
-        const params: Record<string, string | number> = {};
-        if (selectedCategory && selectedCategory !== 'all') params.category = selectedCategory;
-        if (selectedStage && selectedStage !== 'all') params.stage = selectedStage;
-        if (searchQuery && searchQuery.trim() !== '') params.search = searchQuery;
-        params.page = currentPage;
-
-        dispatch(getAllStartups(params));
-    }, [selectedStage, selectedCategory, searchQuery, currentPage]);
+    const {data: startups, isLoading, refetch} = useGetStartupsListQuery(
+        {
+            category: selectedCategory !== "all" ? selectedCategory : undefined,
+            stage: selectedStage !== "all" ? selectedStage : undefined,
+            search: searchQuery.trim() || undefined,
+            page: currentPage,
+        },
+        {refetchOnMountOrArgChange: true}
+    );
 
     const stats = useMemo(
         () => [
-            {label: "Count of all startups", value: startups.total, icon: Briefcase},
-            {label: "Number of users", value: 2, icon: Users},
+            {label: "Count of all startups", value: startups?.total ?? 0, icon: Briefcase},
+            {label: "Number of users", value: 2, icon: Users}, // здесь можно подставить реальное значение
         ],
-        []
+        [startups]
     );
+
+    const resetFilters = () => {
+        setSelectedCategory("all");
+        setSelectedStage("all");
+        setSearchQuery("");
+        setCurrentPage(1);
+    };
+
     return {
-        startups, page: startups.page, totalPages: startups.totalPages,
-        loading, stats, selectedCategory, selectedStage, searchQuery,
-        setSearchQuery: (query: string) => dispatch(setSearchQuery(query)),
-        setSelectedCategory: (category: string) => dispatch(setSelectedCategory(category)),
-        setSelectedStage: (stage: string) => dispatch(setSelectedStage(stage)),
-        setCurrentPage: (page: number) => dispatch(setCurrentPage(page)),
-        resetFilters: () => dispatch(resetFilters()),
+        startups,
+        page: startups?.page ?? 1,
+        totalPages: startups?.totalPages ?? 1,
+        loading: isLoading,
+        stats,
+        selectedCategory,
+        selectedStage,
+        searchQuery,
+        setSearchQuery,
+        setSelectedCategory,
+        setSelectedStage,
+        setCurrentPage,
+        resetFilters,
+        refetch,
     };
 };

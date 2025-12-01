@@ -5,8 +5,6 @@ export type SignUpDataTypes = {
     email: string,
     password: string | undefined,
     birthDate: string | undefined,
-    phone?: number | undefined
-    username?: string,
 }
 
 export type SignInDataTypes = {

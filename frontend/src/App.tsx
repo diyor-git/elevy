@@ -1,22 +1,26 @@
-import Cookies from 'js-cookie';
 import {BrowserRouter, Navigate, Route, Routes} from 'react-router-dom';
 import {TooltipProvider} from '@/components/ui/tooltip';
 import {SigninPage, SignupPage, VerifyEmailPage} from '@/pages/auth';
 import LandingPage from "@/pages/landing";
-import {Toaster} from '@/components/ui/toaster';
 import {NotFound} from "@/components";
-import {useAppDispatch} from "@/redux/hooks.ts";
-import {setTokenFromCookie} from '@/redux/slices/auth-slice';
 import Dashboard from "@/pages/platform";
+import {useEffect} from 'react';
+import {useGetProfileQuery} from "@/api/auth-api.ts";
+import {useToast} from "@/hooks/use-toast.ts";
+import {Toaster} from "@/components/Toaster.tsx";
 
 function App() {
-    const token = Cookies.get('token')
-    const dispatch = useAppDispatch()
+    const {data: user, isLoading, isError} = useGetProfileQuery();
+    const {toast} = useToast()
 
-    if (token) dispatch(setTokenFromCookie(token));
+    useEffect(() => {
+        if (!isLoading && !user || isError) {
+        }
+    }, []);
     return (
         <TooltipProvider>
             <BrowserRouter>
+                {/*<Toast title={'asd'}/>*/}
                 <Routes>
                     <Route path="/" element={<LandingPage/>}/>
                     <Route path="/signin" element={<SigninPage/>}/>
@@ -25,9 +29,8 @@ function App() {
 
                     <Route path="/dashboard/*" element={<Dashboard/>}/>
 
-
-                    <Route index path="/*" element={<Navigate to="/404"/>}/>
-                    <Route index path="/404" element={<NotFound/>}/>
+                    <Route path="/*" element={<Navigate to="/404"/>}/>
+                    <Route path="/404" element={<NotFound/>}/>
                 </Routes>
             </BrowserRouter>
             <Toaster/>
